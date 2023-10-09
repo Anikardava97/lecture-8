@@ -329,16 +329,6 @@ userB.checkout()
 
 // კალათას ვეღარ ვასუფთავებ :)
 
-
-
-
-
-
-
-
-
-
-
 /*
 1. Class-ი სახელით Animal, with properties: name, species, age. ამ class აქვს:
 Designated init ამ properties ინიციალიზაციისთვის.
@@ -369,6 +359,22 @@ Init-ი -> სახელით, ასაკით, ბეწვის ფე
 convenience init -> სახელით, ბეწვის ფერით.
  */
 
+class Mammal: Animal {
+    var furColor: String
+    
+    init(name: String, age: Int, furColor: String) {
+        self.furColor = furColor
+        super.init(name: name, species: "Mammal", age: age)
+    }
+    
+    convenience init(name: String, furColor: String) {
+        self.init(name: name, age: 5, furColor: furColor)
+    }
+    
+    override func makeSound () {
+        print ("Mammal 🔊")
+    }
+}
 
 /*
 3. Animal-ის child class: Bird.
@@ -378,6 +384,26 @@ Init -> სახელით, ასაკით, შეუძლია თუ 
 convenience init -> სახელით, შეუძლია თუ არა ფრენა.
 */
 
+class Bird: Animal {
+    var canFly: Bool
+    
+    init(name: String, age: Int, canFly: Bool) {
+        self.canFly = canFly
+        super.init(name: name, species: "Bird", age: age)
+    }
+    
+    convenience init(name: String, canFly: Bool) {
+        self.init(name: name, age: 5, canFly: canFly)
+        //ეს ხო დეფოლტია და შეიძლება name: "Bird Name" - ასე რამე სახელი მივუთითო?
+       // age რომ არ მივუთითო მაერორებს და ვერ ვხვდები name-ზე რატო არ მაერორებს
+        //მგონი არასწორად მესმის
+    }
+    
+    override func makeSound() {
+        print("Bird 🔊")
+    }
+}
+
 /*
 4. Animal-ის child class: Reptile.
 დამატებითი Bool property: isColdBlooded.
@@ -385,11 +411,40 @@ Override method makeSound() სადაც ავღწერ შესაბ�
 Failable Init თუ რეპტილიას ასაკი ნაკლებია 0-ზე ვაბრუნებთ nil-ს.
 */
 
+class Reptile: Animal {
+    var isColdBlooded: Bool
+    
+    init?(name: String, age: Int, isColdBlooded:Bool) {
+        self.isColdBlooded = isColdBlooded
+        super.init(name: name, species: "Reptile", age: age)
+        if age < 0 {
+            return nil
+        }
+    }
+   
+    override func makeSound() {
+        print("Reptile 🔊")
+    }
+}
+    
 /*
 5. Mammal-ის child class: Lion.
 დამატებით String property: maneColor.
 Override მეთოდი makeSound() სადაც ავღწერ შესაბამის ხმას.
 */
+
+class Lion: Mammal {
+    var maneColor: String
+    
+    init(name: String, age: Int, furColor: String, maneColor: String) {
+        self.maneColor = maneColor
+        super.init(name: name, age: age, furColor: furColor)
+    }
+    
+    override func makeSound() {
+        print("🦁🔊")
+    }
+}
 
 /*
 6. Bird-ის child class: Eagle.
@@ -397,21 +452,75 @@ Override მეთოდი makeSound() სადაც ავღწერ შ�
 Override მეთოდი makeSound() სადაც ავღწერ შესაბამის ხმას.
 */
 
+class Eagle: Bird {
+    var wingSpan: Double
+    
+    init(name: String, age: Int, canFly: Bool, wingSpan: Double) {
+        self.wingSpan = wingSpan
+        super.init(name: name, age: age, canFly: canFly)
+    }
+   
+    override func makeSound() {
+        print("🦅🔊")
+    }
+}
+
 /*
 7. Reptil-ის child class: Snake.
 დამატებით Double property: length.
 Override მეთოდი makeSound() სადაც ავღწერ შესაბამის ხმას.
 */
 
-/*
-8. აბსტრაქციისათვის Animal class დავუმატოთ required init() შიგნით აღწერილი fatal error-ით სადაც ვიტყვით რომ Animal class არის აბსტრაქტული და არ უნდა იყოს მისი შექმნა პირდაპირ შესაძლებელი.
-*/
+class Snake: Reptile {
+    var length: Double
+    
+    init?(name: String, age: Int, isColdBlooded: Bool, length: Double) {
+        self.length = length
+        super.init(name: name, age: age, isColdBlooded: isColdBlooded)
+        if age < 0 {
+            return nil
+        }
+    }
+    
+    override func makeSound() {
+        print("🪱🔊")
+    }
+}
 
 /*
+8. აბსტრაქციისათვის Animal class დავუმატოთ required init() შიგნით აღწერილი fatal error-ით სადაც ვიტყვით რომ Animal class არის აბსტრაქტული და არ უნდა იყოს მისი შექმნა პირდაპირ შესაძლებელი.
+ 
+// required init () ვერ ვხვდები კარგად რა არის, რომ არ მოხდეს პირდაპირ animal class-ის შექმნა? მაგრამ მერე სუბკლასებშიც უნდა მივუთითო required init, სხვანაირად ერორს მიწერს და ვერ მივხვდი როგორ გავაკეთო, ამიტომ ისე ვტოვებ.
+ 
 9. შევქმნათ ზოოპარკის ცხოველების Array, დავამატოთ მასში სხვადასხვა სახის ცხოველები: 2-2 Mammal, Bird, Reptile ასევე შევქმნათ 1-1 Lion, Eagle, Snake.
 */
+
+let mammalA = Mammal(name: "Polar Bear", age: 5, furColor: "White")
+let mammalB = Mammal(name: "Cat", age: 2, furColor: "Grey")
+
+let birdA = Bird(name: "Crow", age: 3, canFly: true)
+let birdB = Bird(name: "Penguin", age: 1, canFly: false)
+
+let reptileA = Reptile(name: "Lizard", age: 1, isColdBlooded: true)
+let reptileB = Reptile(name: "Crocodile", age: 3, isColdBlooded: true)
+
+let lion = Lion(name: "Leo", age: 4, furColor: "Brown", maneColor: "Black")
+let eagle = Eagle(name: "Apollo", age: 1, canFly: true, wingSpan: 2.0)
+let snake = Snake(name: "Drake", age: 2, isColdBlooded: true, length: 2.5)
+
+var zooAnimals: [Animal?] = [mammalA, mammalB, birdA, birdB, reptileA, reptileB, lion, eagle, snake]
 
 /*
 10. დავბეჭდოთ ჩვენი Array-იდან, ყველა ცხოველის სახელი, სახეობა, ასაკი, და ასე გამოვიძახოთ makeSound მეთოდი.
 */
  
+for animal in zooAnimals {
+    if let unwrappedAnimal = animal {
+        print("Name: \(unwrappedAnimal.name), Species: \(unwrappedAnimal.species), age: \(unwrappedAnimal.age)")
+    } else {
+        print("Animal is nil")
+    }
+    animal?.makeSound()
+    print("----")
+}
+
